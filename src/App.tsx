@@ -1,25 +1,29 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+
+import S from "./App.styles";
+import Review from "./components/Review";
+import Summary from "./components/Summary";
+import { Review as IReview } from "./shared/types";
 
 function App() {
+  const [reviews, setReviews] = useState<IReview[]>([]);
+  const [modal, setModal] = useState(false);
+
+  useEffect(() => {
+    fetch(`${process.env.REACT_APP_API_ENDPOINT}/reviews`)
+      .then((res) => res.json())
+      .then((res) => setReviews(res.data));
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <S.Wrapper>
+      <h1>The Minimalist Entrepreneur</h1>
+      <Summary openModal={() => setModal(true)} reviews={reviews} />
+      {modal && <div>modal</div>}
+      {reviews.map((review) => (
+        <Review key={review.id} review={review} />
+      ))}
+    </S.Wrapper>
   );
 }
 
