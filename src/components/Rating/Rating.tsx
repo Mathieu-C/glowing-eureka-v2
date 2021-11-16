@@ -9,7 +9,7 @@ const Rating: React.FC<Props> = ({ score }) => {
   const percentage = (100 / 5) * +score;
 
   return (
-    <S.Container aria-label={`${score} start out of 5`}>
+    <S.Container aria-label={`${score} star out of 5`}>
       <S.Stars style={{ width: `${percentage}%` }} />
     </S.Container>
   );
