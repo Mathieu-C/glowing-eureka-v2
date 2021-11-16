@@ -9,11 +9,13 @@ import { Review as IReview } from "./shared/types";
 function App() {
   const [reviews, setReviews] = useState<IReview[]>([]);
   const [modal, setModal] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_ENDPOINT}/reviews`)
       .then((res) => res.json())
-      .then((res) => setReviews(res.data));
+      .then((res) => setReviews(res.data || []))
+      .catch(() => setError(true));
   }, []);
 
   useEffect(() => {
@@ -34,6 +36,9 @@ function App() {
       <Summary openModal={() => setModal(true)} reviews={reviews} />
       {modal && <NewReview close={() => setModal(false)} />}
       <h2>Reviews</h2>
+      {error && (
+        <p>Error: couldn&apos;t fetch the back-end, please try again.</p>
+      )}
       {reviews.map((review) => (
         <Review key={review.id} review={review} />
       ))}
