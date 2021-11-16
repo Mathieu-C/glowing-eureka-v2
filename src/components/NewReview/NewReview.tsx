@@ -6,17 +6,23 @@ import S from "./NewReview.styles";
 interface FieldProps {
   checked?: boolean;
   handleChange: Function;
+  isHalf: boolean;
   value: number;
 }
 
-const Field: React.FC<FieldProps> = ({ checked, handleChange, value }) => (
+const Field: React.FC<FieldProps> = ({
+  checked,
+  handleChange,
+  isHalf,
+  value,
+}) => (
   <>
     <S.Label
       aria-label={`${value} star`}
       htmlFor={`rating-${value}`}
-      className="NewReview__label"
+      isHalf={isHalf}
     >
-      <i className="NewReview__star"></i>
+      <i></i>
     </S.Label>
     <S.Input
       defaultChecked={checked}
@@ -34,12 +40,12 @@ interface NewReviewProps {
 }
 
 const NewReview: React.FC<NewReviewProps> = ({ close }) => {
-  const ratings = [1, 2, 3, 4, 5];
+  const ratings = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5];
 
   const [rating, setRating] = useState(3);
   const [body, setBody] = useState("");
 
-  const [errors, setErrors] = useState([]);
+  const [errors, setErrors] = useState<string[]>([]);
 
   const handleSubmit = () => {
     fetch(`${process.env.REACT_APP_API_ENDPOINT}/reviews`, {
@@ -56,7 +62,8 @@ const NewReview: React.FC<NewReviewProps> = ({ close }) => {
         } else {
           setErrors(data.errors);
         }
-      });
+      })
+      .catch(() => setErrors(["Server error, please try again."]));
   };
 
   return (
@@ -72,12 +79,13 @@ const NewReview: React.FC<NewReviewProps> = ({ close }) => {
         <S.Fieldset>
           <legend>Rating</legend>
           <S.Stars>
-            {ratings.map((item) => (
+            {ratings.map((item, index) => (
               <Field
                 checked={item === rating}
                 handleChange={() => setRating(item)}
                 key={item}
                 value={item}
+                isHalf={index % 2 === 0}
               />
             ))}
           </S.Stars>

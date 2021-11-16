@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 const Container = styled.div`
   background: white;
@@ -33,9 +33,40 @@ const Textarea = styled.textarea`
   width: 100%;
 `;
 
-const Label = styled.label`
+interface LabelProps {
+  isHalf?: boolean;
+}
+
+const HalfLabel = css`
+  margin-right: -16px;
+  overflow: hidden;
+  padding-right: 0;
+  width: 16px;
+  z-index: 2;
+`;
+
+const Input = styled.input`
+  left: -9999px !important;
+  position: absolute !important;
+
+  &:checked {
+    & ~ label i {
+      background-image: url("star.svg");
+    }
+  }
+`;
+
+const Label = styled.label<LabelProps>`
   cursor: pointer;
   padding: 0 2px;
+
+  ${({ isHalf }) => isHalf && HalfLabel}
+
+  &:hover {
+    & ~ label i {
+      background-image: url("star.svg") !important;
+    }
+  }
 
   i {
     background-image: url("star-full.svg");
@@ -50,20 +81,8 @@ const Stars = styled.div`
   display: inline-flex;
 
   &:hover {
-    & ~ .NewReview__label .NewReview__star {
+    & label i {
       background-image: url("star-full.svg");
-    }
-  }
-`;
-
-const Input = styled.input`
-  left: -9999px !important;
-  position: absolute !important;
-
-  &:checked,
-  &:hover {
-    & ~ .NewReview__label .NewReview__star {
-      background-image: url("star.svg");
     }
   }
 `;
